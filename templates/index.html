@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Heart Disease Prediction</h1>
+    <form id="predictionForm">
+        <label for="BMI">BMI:</label>
+        <input type="number" id="BMI" name="BMI" required><br>
+        
+        <label for="Smoking">Smoking:</label>
+        <select id="Smoking" name="Smoking" required>
+            <option value="">--Select Option--</option>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select><br>
+        
+        <label for="Alcohol_drinking">Alcohol Drinking:</label>
+        <select id="Alcohol_drinking" name="Alcohol_drinking" required>
+            <option value="">--Select Option--</option>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select><br>
+        
+        <label for="Stroke">Stroke:</label>
+        <select id="Stroke" name="Stroke" required>
+            <option value="">--Select Option--</option>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select><br>
+        
+        <label for="Physical_health">Physical Health:</label>
+        <input type="range" id="Physical_health" name="Physical_health" min="0" max="30" step="1" required><span id="physicalHealthValue">15</span><br><br>
+        
+        <label for="Mental_health">Mental Health:</label>
+        <input type="range" id="Mental_health" name="Mental_health" min="0" max="30" step="1"required><span id="MentalHealthValue">15</span><br><br>
+        <label for="Diff_walking">Difficulty Walking:</label>
+        <select id="Diff_walking" name="Diff_walking" required>
+            <option value="">--Select Option--</option>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select><br>
+        
+        <label for="Sex">Sex:</label>
+        <select id="Sex" name="Sex" required>
+            <option value="">--Select Option--</option>
+            <option value="0">Female</option>
+            <option value="1">Male</option>
+        </select><br>
+        
+        <label for="Age_category">Age Category:</label>
+        <select id="Age_category" name="Age_category" required>
+            <option value="">--Select Option--</option>
+            <option value="21">18-24</option>
+            <option value="27">25-29</option>
+            <option value="32">30-34</option>
+            <option value="37">35-39</option>
+            <option value="42">40-44</option>
+            <option value="47">45-49</option>
+            <option value="52">50-54</option>
+            <option value="57">55-59</option>
+            <option value="62">60-64</option>
+            <option value="67">65-69</option>
+            <option value="72">70-74</option>
+            <option value="77">75-79</option>
+            <option value="85">80 or older</option>
+        </select><br>
+        
+        <label for="Race">Race:</label>
+        <select id="Race" name="Race" required>
+            <option value="">--Select Option--</option>
+            <option value="1">White</option>
+            <option value="2">Black</option>
+            <option value="3">Asian</option>
+            <option value="4">American</option>
+            <option value="5">Other</option>
+            <option value="6">Hispanic</option>
+        </select><br>
+        
+        <label for="Diabetic">Diabetic:</label>
+        <select id="Diabetic" name="Diabetic" required>
+            <option value="">--Select Option--</option>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select><br>
+        
+        <label for="Physical_activity">Physical Activity:</label>
+        <select id="Physical_activity" name="Physical_activity" required>
+            <option value="">--Select Option--</option>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select><br>
+        
+        <label for="General_health">General Health:</label>
+        <select id="General_health" name="General_health" required>
+            <option value="">--Select Option--</option>
+            <option value="1">Excellent</option>
+            <option value="2">Very Good</option>
+            <option value="3">Good</option>
+            <option value="4">fair</option>
+            <option value="5">Poor</option>
+        </select><br>
+        
+        <label for="Sleep_time">Sleep Time (hours):</label>
+        <input type="number" id="Sleep_time" name="Sleep_time" required><br>
+        
+        <label for="Asthma">Asthma:</label>
+        <select id="Asthma" name="Asthma" required>
+            <option value="">--Select Option--</option>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select><br>
+        
+        <label for="Kidney_disease">Kidney Disease:</label>
+        <select id="Kidney_disease" name="Kidney_disease" required>
+            <option value="">--Select Option--</option>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select><br>
+        
+        <label for="Skin_cancer">Skin Cancer:</label>
+        <select id="Skin_cancer" name="Skin_cancer" required>
+            <option value="">--Select Option--</option>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select><br>
+        
+        <input type="submit" value="Predict">
+    </form>
+    
+    <div id="result">
+        <h2>Prediction Result:</h2>
+        <p id="predictionResult" style="display:flex;justify-content: center;
+">{{ prediction_result }}</p>
+    </div>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        document.getElementById("Physical_health").addEventListener("input", function() {
+            document.getElementById("physicalHealthValue").textContent = this.value;
+        });
+        document.getElementById("Mental_health").addEventListener("input", function() {
+            document.getElementById("MentalHealthValue").textContent = this.value;
+        });
+
+        $(document).ready(function() {
+            $('#predictionForm').submit(function(event) {
+                event.preventDefault();
+                
+                var formData = {
+                    'BMI': $('#BMI').val(),
+                    'Smoking': $('#Smoking').val(),
+                    'Alcohol_drinking': $('#Alcohol_drinking').val(),
+                    'Stroke': $('#Stroke').val(),
+                    'Physical_health': $('#Physical_health').val(),
+                    'Mental_health': $('#Mental_health').val(),
+                    'Diff_walking': $('#Diff_walking').val(),
+                    'Sex': $('#Sex').val(),
+                    'Age_category': $('#Age_category').val(),
+                    'Race': $('#Race').val(),
+                    'Diabetic': $('#Diabetic').val(),
+                    'Physical_activity': $('#Physical_activity').val(),
+                    'General_health': $('#General_health').val(),
+                    'Sleep_time': $('#Sleep_time').val(),
+                    'Asthma': $('#Asthma').val(),
+                    'Kidney_disease': $('#Kidney_disease').val(),
+                    'Skin_cancer': $('#Skin_cancer').val()
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    contentType: 'application/json',
+                    url: '/predict',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        console.log(response);
+                        $('#predictionResult').text('Heart disease probability: ' + response.heart_disease_probability);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
